@@ -48,7 +48,7 @@ type EasyLogger struct {
 	logger *log.Logger
 }
 
-func NewRotatingEasyLogger(fileName string,
+func NewSizeRotatingEasyLogger(fileName string,
 	maxFileSize int,
 	maxBackupAge int,
 	maxBackupFiles int,
@@ -67,6 +67,33 @@ func NewRotatingEasyLogger(fileName string,
 		Compress:   useCompression, // compress the rotated files, default is not to compress
 	}
 	ws := []io.Writer{lum}
+	if needConsoleOut {
+		ws = append(ws, os.Stdout)
+	}
+	outs := io.MultiWriter(ws...)
+	ll := log.New(outs, prefixForLogger, lineFlag)
+
+	return &EasyLogger{logger: ll}
+}
+
+func NewTimeRotatingEasyLogger(dirName string,
+	rotateDays int,
+	maxBackupFiles int,
+	useLocalTime bool,
+	useCompression bool,
+	lineFlag int, // log.Ldate|log.Lmicroseconds
+	prefixForLogger string,
+	needConsoleOut bool) *EasyLogger {
+
+	tl := &Logger{
+		Directory:   dirName,
+		MaxDays:     rotateDays,
+		MaxBackups:  maxBackupFiles,
+		LocalTime:   useLocalTime,
+		Compress:    useCompression,
+	}
+
+	ws := []io.Writer{tl}
 	if needConsoleOut {
 		ws = append(ws, os.Stdout)
 	}

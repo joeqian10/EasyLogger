@@ -15,10 +15,10 @@ import (
 
 func TestNewRotatingEasyLogger(t *testing.T) {
 	l := NewRotatingEasyLogger(
-		"./Logs/test.log",           // log file name
-		1,                           // max file size in MB
-		30,                          // max file backup days
-		30,                          // max backup file number
+		"./Logs/test.log",           // log currentFile name
+		1,                           // max currentFile size in MB
+		30,                          // max currentFile backup days
+		30,                          // max backup currentFile number
 		true,                        // use local time
 		false,                       // use compression for backup files
 		log.Ldate|log.Lmicroseconds, // log line flag
